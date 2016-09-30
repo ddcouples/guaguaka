@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+<link href="css/main.css" rel="stylesheet" />
+<body>
+<div id="main">
+  <img id="bac-img" src="img/1.jpg" />
+  <canvas id="canvas"></canvas>
+  <script type="text/javascript">
+      var isMouseDown=false;
+	  var context;
+	  var width;
+	  var height;
+	  var canHeight;
+	  var img;
+	  var imgHeight;
+	  var imgOriWidth;
+	  var imgOriHeight;
+      window.onload=function(){
+		   makeCss();
+		  drawImag(img,400,400);
+	  }
+	  window.onmousedown=function(e){
+		  isMouseDown=true;
+		 //context.clearRect(0,0,width,canHeight);
+	  }
+	  window.onmousemove=function(e){
+		  if(isMouseDown){
+			   console.log(img.width);
+			   drawImag(img,e.pageX,e.pageY);
+		  }
+	  }
+	  window.onmouseup=function(){
+		  isMouseDown=false;
+	  }
+	  document.addEventListener("touchstart",function(e){
+		  isMouseDown=true;
+	  },false);
+	   document.addEventListener("touchmove",function(e){
+		  var x=e.touches[0].pageX-img.getBoundingClientRect().left;
+		  var y=e.touches[0].pageY-img.getBoundingClientRect().top;
+		 // console.log("touch"+x+":"+y);
+		 if(isMouseDown){
+			   drawImag(img,x,y);
+		  }
+	  },false);
+	   document.addEventListener("touchend",function(e){
+		  isMouseDown=false;
+	  },false);
+	  function drawImag(img,x,y){
+		  context.save();
+		  context.beginPath();
+		  context.arc(x,y,30,0,Math.PI*2,false);
+		  context.closePath();
+		  context.clip();
+		  var y1=(imgHeight-height)/2/imgHeight*imgOriHeight;
+		  var y2=(imgHeight+height)/2/imgHeight*imgOriHeight;
+		  console.log(y1+":"+y2);
+		  context.drawImage(img,0,height<imgHeight?y1:0,imgOriWidth,height<imgHeight?y2-y1:imgOriHeight,0,0,width,canHeight);
+		  //context.drawImage(img,0,0,width,canHeight);
+		  context.restore();
+	  }
+	  function makeCss(){
+		  img=document.querySelector("#bac-img");
+		  imgOriWidth=img.width;
+		  imgOriHeight=img.height;
+		  width=img.width=document.documentElement.clientWidth;
+		  height=document.documentElement.clientHeight;
+		  var main=document.querySelector("#main");
+		  var canvas=document.querySelector("#canvas");
+		  context=canvas.getContext("2d");
+		  imgHeight=img.height;
+		  canHeight= canvas.height=height>img.height?img.height:height;
+		  canvas.width=img.width;
+		  canvas.style.top=height>img.height?(height-img.height)/2+"px":0;
+		  main.style.width=img.width+"px";
+		  main.style.height=height+"px";
+		  img.style.top=(height-img.height)/2+"px";
+		  console.log(height+":"+img.height)
+	  }
+	  
+  </script>
+</div>
+</body>
+</html>
